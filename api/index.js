@@ -39,7 +39,7 @@ app.use(errHandler);
 
 const PORT = process.env.PORT || 4000;
 console.log(PORT)
-app.listen(PORT, console.log(`server started on port ${PORT}`))
+app.listen(PORT, '0.0.0.0', console.log(`server started on port ${PORT}`))
 
 
 module.exports = app;
