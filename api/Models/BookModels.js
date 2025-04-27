@@ -4,21 +4,27 @@ const BookSchema = mongoose.Schema({
     title: {
         type: String,
         required: true,
+        trim: true,
     },
     description: {
         type: String,
         required: true,
+        trim: true,
     },
     author: {
         type: String,
         required: true,
+        trim: true,
     },
     uploader: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    publicationDate: {
+    publicationDate: { 
+        type: Date,
+    },
+    uploadDate: {
         type: Date,
         default: Date.now,
     },
@@ -47,6 +53,8 @@ const BookSchema = mongoose.Schema({
         id: mongoose.Schema.Types.ObjectId,
     },
 });
+
+BookSchema.index({ title: 'text', description: 'text', author: 'text' });
 
 const Book = mongoose.model("Book", BookSchema);
 module.exports = Book;

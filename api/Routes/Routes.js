@@ -1,11 +1,11 @@
 const express = require('express');
 
 const { 
-    createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog, likeBlog, getlBlogikes
+    createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog, likeBlog, getBloglikes,
 } = require('../Controllers/BlogControllers');
 
 const { 
-    addComment, getCommentsForPost, updateComment, deleteComment 
+    addComment, getCommentsForBlog, getCommentsForBook, updateComment, deleteComment 
 } = require('../Controllers/CommentControllers');
 
 const { 
@@ -13,7 +13,7 @@ const {
 } = require('../Controllers/TagControllers');
 
 const { 
-    registerUser, loginUser, getInfo, toggleRole
+    registerUser, loginUser, getInfo, updateProfile
 } = require('../Controllers/UserControllers');
 
 const {
@@ -37,8 +37,9 @@ router.route('/blogs/:id')
     .put(protect, authorizeAsAuthor, updateBlog)
     .delete(protect, authorizeAsAuthor, deleteBlog);
 
-router.route('/blogs/like/:id')
+router.route('/blogs/:id/like')
     .post(protect, likeBlog)
+    .get(protect, getBloglikes);
 
 // Book Routes
 router.route('/books')
@@ -48,25 +49,27 @@ router.route('/books')
 router.route('/booksHomePage')
     .get(getAllBookIdsAndImages); 
 
-router.route('/book/like/:id')
+router.route('/books/:id/like')
     .post(protect, likeBook)
     .get(protect, getBooklikes)
 
-router.route('/book/:id')
-    .get(getBookById)
-    .put(protect, authorizeAsAuthor, updateBook)  
-    .delete(protect, authorizeAsAuthor, deleteBook);
+router.route('/books/:id/download') 
+    .get(getBookById);
 
-router.route('/bookDetails/:id')
+router.route('/books/:id/details') // Specific route for metadata
     .get(getBookDetailsById)
-
+    .put(protect, authorizeAsAuthor, updateBook)
+    .delete(protect, authorizeAsAuthor, deleteBook);
 
 // Comment Routes
 router.route('/comments')
     .post(protect, addComment);
 
 router.route('/comments/:blogId')
-    .get(getCommentsForPost);
+    .get(getCommentsForBlog);  // Supports ?page= & ?limit=
+
+router.route('/comments/book/:bookId')
+    .get(getCommentsForBook)  // Supports ?page= & ?limit=
 
 router.route('/comments/:commentId')
     .put(protect, updateComment)
@@ -76,7 +79,10 @@ router.route('/comments/:commentId')
 // Tag Routes
 router.route('/tags')
     .post(protect, createTag)
-    .get(getTags);
+    .get(getTags)
+    .put(protect, updateTag)
+    .delete(protect, deleteTag);
+
 
 
 // User Routes
@@ -86,10 +92,8 @@ router.route('/users/register')
 router.route('/users/login')
     .post(loginUser);
 
-router.route('/users/toggleRole')
-    .post(protect, toggleRole);
-
-router.route('/users/getInfo')
-    .get(protect, getInfo);
+router.route('/users/me')
+    .get(protect, getInfo)
+    .put(protect, updateProfile);
 
 module.exports = router;

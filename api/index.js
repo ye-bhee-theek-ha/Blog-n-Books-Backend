@@ -28,18 +28,21 @@ app.use(express.json());
 
 
 app.get("/", (req, res) => {
-    res.send("API is running on vercel...")
+    res.send("API is running..")
 })
 
-// app.use("/api", Routes)
+app.use("/api", Routes)
 
 
 app.use(NotFound);
 app.use(errHandler);
 
-const PORT = process.env.PORT || 4000;
-console.log(PORT)
-app.listen(PORT, '0.0.0.0', console.log(`server started on port ${PORT}`))
-
 
 module.exports = app;
+
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
